@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
+import { supabase } from "@/utils/supabaseClient"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -64,13 +65,22 @@ export default function SignUpPage() {
 
     setIsLoading(true)
 
-    // Simulate API call
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      setSuccess("Account created successfully! Redirecting...")
-      setTimeout(() => {
-        router.push("/dashboard")
-      }, 1000)
+      const { data, error: supabaseError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: { data: { full_name: formData.fullName } },
+      })
+      if (supabaseError) {
+        setError(supabaseError.message)
+      } else if (data && data.user) {
+        setSuccess("Account created successfully! Redirecting...")
+        setTimeout(() => {
+          router.push("/dashboard")
+        }, 1000)
+      } else {
+        setError("An error occurred. Please try again.")
+      }
     } catch (err) {
       setError("An error occurred. Please try again.")
     } finally {

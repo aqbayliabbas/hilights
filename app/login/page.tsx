@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
+import { supabase } from "@/utils/supabaseClient"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -26,17 +27,20 @@ export default function LoginPage() {
     setError("")
     setSuccess("")
 
-    // Simulate API call
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      if (email === "demo@hilight.com" && password === "password") {
+      const { data, error: supabaseError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+      if (supabaseError) {
+        setError(supabaseError.message)
+      } else if (data && data.user) {
         setSuccess("Login successful! Redirecting...")
         setTimeout(() => {
           router.push("/dashboard")
         }, 1000)
       } else {
-        setError("Invalid email or password. Try demo@hilight.com / password")
+        setError("Invalid email or password.")
       }
     } catch (err) {
       setError("An error occurred. Please try again.")
