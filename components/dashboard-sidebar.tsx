@@ -84,32 +84,25 @@ export function DashboardSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {recentConversations.length > 0 ? (
-                recentConversations.map((conversation) => (
-                  <SidebarMenuItem key={conversation.id}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={conversation.isActive}
-                      className="flex-col items-start h-auto py-3"
-                    >
-                      <Link href={`/dashboard/conversation/${conversation.id}`}>
-                        <div className="flex items-center space-x-2 w-full">
-                          <MessageCircle className="h-4 w-4 flex-shrink-0" />
-                          <span className="font-medium truncate">{conversation.title}</span>
-                        </div>
-                        <div className="text-xs text-gray-500 mt-1 line-clamp-2 w-full text-left">
-                          {conversation.lastMessage}
-                        </div>
-                        <div className="flex items-center space-x-1 mt-2 text-xs text-gray-400">
-                          <Clock className="h-3 w-3" />
-                          <span>{conversation.timestamp}</span>
-                        </div>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))
-              ) : (
-                <div className="px-3 py-4 text-sm text-gray-500 text-center">No recent conversations.</div>
-              )}
+  recentConversations.map((conversation) => (
+    <SidebarMenuItem key={conversation.id}>
+      <SidebarMenuButton
+        asChild
+        isActive={conversation.isActive}
+        className="flex-col items-start h-auto py-3"
+      >
+        <Link href={`/dashboard/conversation/${conversation.id}`}>
+          <div className="flex items-center space-x-2 w-full">
+            <MessageCircle className="h-4 w-4 flex-shrink-0" />
+            <span className="font-medium truncate">{conversation.title}</span>
+          </div>
+        </Link>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  ))
+) : (
+  <div className="px-3 py-4 text-sm text-gray-500 text-center">No recent conversations.</div>
+)}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

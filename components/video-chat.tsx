@@ -38,42 +38,8 @@ export function VideoChat({ videoUrl, onBack, transcript }: VideoChatProps) {
     ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
     : "/placeholder.svg?height=200&width=400"
 
-  // Simulated mock chat data if no real chat yet
-  const mockChat: Message[] = [
-    {
-      id: "1",
-      type: "ai",
-      content: "Welcome! I'm your AI learning assistant. How can I help you with React Hooks today?",
-      timestamp: new Date(Date.now() - 1000 * 60 * 3),
-    },
-    {
-      id: "2",
-      type: "user",
-      content: "What is useState?",
-      timestamp: new Date(Date.now() - 1000 * 60 * 2),
-    },
-    {
-      id: "3",
-      type: "ai",
-      content: "useState is a React hook that lets you add state to functional components. Would you like an example?",
-      timestamp: new Date(Date.now() - 1000 * 60 * 2 + 5000),
-    },
-    {
-      id: "4",
-      type: "user",
-      content: "Yes, please show me an example.",
-      timestamp: new Date(Date.now() - 1000 * 60 * 1),
-    },
-    {
-      id: "5",
-      type: "ai",
-      content: "Sure! Here is a simple example: \n\nconst [count, setCount] = useState(0);\n\nThis creates a state variable called count, initialized to 0.",
-      timestamp: new Date(Date.now() - 1000 * 60 * 1 + 5000),
-    },
-  ];
-
-  // If no real chat history, show mock chat
-  const [messages, setMessages] = useState<Message[]>(mockChat)
+  // Real chat state only
+  const [messages, setMessages] = useState<Message[]>([])
   const [inputMessage, setInputMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [transcription, setTranscription] = useState<string>(transcript || "")
@@ -139,30 +105,50 @@ export function VideoChat({ videoUrl, onBack, transcript }: VideoChatProps) {
   }
 
   const handleSendMessage = async () => {
-    if (!inputMessage.trim()) return
+    if (!inputMessage.trim()) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
       type: "user",
       content: inputMessage,
       timestamp: new Date(),
-    }
+    };
 
-    setMessages((prev) => [...prev, userMessage])
-    setInputMessage("")
-    setIsLoading(true)
+    setMessages((prev) => [...prev, userMessage]);
+    setInputMessage("");
+    setIsLoading(true);
 
-    // Simulate AI response
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/ask-about-video", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          question: userMessage.content,
+          videoId: videoId,
+          videoUrl: videoUrl,
+        }),
+      });
+      const data = await response.json();
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: "ai",
-        content: `That's a great question about "${inputMessage}". Based on the video content, I can explain that this concept relates to how React manages state and side effects. Would you like me to break this down further or provide some practice examples?`,
+        content: data.answer || data.error || "Sorry, I couldn't find an answer.",
         timestamp: new Date(),
-      }
-      setMessages((prev) => [...prev, aiMessage])
-      setIsLoading(false)
-    }, 1500)
+      };
+      setMessages((prev) => [...prev, aiMessage]);
+    } catch (error) {
+      const aiMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        type: "ai",
+        content: "Sorry, there was an error processing your request.",
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, aiMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
