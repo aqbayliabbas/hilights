@@ -42,6 +42,20 @@ export default function DashboardPage() {
         throw new Error(data.error || 'Failed to fetch transcript');
       }
       setTranscript(data.content);
+      // Save video URL and transcription to Supabase
+      try {
+        // Get the current user's access token
+        const session = await import('@/utils/supabaseClient').then(m => m.supabase.auth.getSession());
+        const access_token = (await session).data.session?.access_token;
+        await fetch('/api/videos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ video_url: youtubeUrl, transcription: data.content, access_token })
+        });
+      } catch (saveErr) {
+        // Optional: Show a warning if saving fails, but don't block the UI
+        console.warn('Failed to save video and transcription:', saveErr);
+      }
       setShowVideoChat(true);
     } catch (err: any) {
       setError(err.message || 'Unexpected error');
