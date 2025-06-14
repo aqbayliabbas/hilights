@@ -42,7 +42,22 @@ export default function ConversationPage({ params }: { params: { id: string } })
           <VideoChat
             videoUrl={conversation.youtube_url}
             transcript={conversation.transcription}
-            // Optionally pass chat and id as props if VideoChat supports it
+            chat={Array.isArray(conversation.chat)
+              ? conversation.chat.flatMap((entry, idx) => [
+                  {
+                    id: `${idx}-user`,
+                    type: "user",
+                    content: entry.question,
+                    timestamp: entry.timestamp ? new Date(entry.timestamp) : new Date(),
+                  },
+                  {
+                    id: `${idx}-ai`,
+                    type: "ai",
+                    content: entry.answer,
+                    timestamp: entry.timestamp ? new Date(entry.timestamp) : new Date(),
+                  },
+                ])
+              : []}
             onBack={() => router.push("/dashboard")}
           />
         </div>

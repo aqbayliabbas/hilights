@@ -16,6 +16,7 @@ interface VideoChatProps {
   videoUrl: string
   onBack: () => void
   transcript?: string | null
+  chat?: Message[]
 }
 
 interface Message {
@@ -25,7 +26,7 @@ interface Message {
   timestamp: Date
 }
 
-export function VideoChat({ videoUrl, onBack, transcript }: VideoChatProps) {
+export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps) {
   // Move getVideoId function to the top
   const getVideoId = (url: string) => {
     const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/)
@@ -39,7 +40,16 @@ export function VideoChat({ videoUrl, onBack, transcript }: VideoChatProps) {
     : "/placeholder.svg?height=200&width=400"
 
   // Real chat state only
-  const [messages, setMessages] = useState<Message[]>([])
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (chat && Array.isArray(chat) && chat.length > 0) {
+      // Convert timestamp to Date if needed
+      return chat.map((msg) => ({
+        ...msg,
+        timestamp: msg.timestamp ? new Date(msg.timestamp) : new Date(),
+      }));
+    }
+    return [];
+  });
   const [inputMessage, setInputMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [transcription, setTranscription] = useState<string>(transcript || "")
