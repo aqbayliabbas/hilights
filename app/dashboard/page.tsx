@@ -47,10 +47,25 @@ export default function DashboardPage() {
         // Get the current user's access token
         const session = await import('@/utils/supabaseClient').then(m => m.supabase.auth.getSession());
         const access_token = (await session).data.session?.access_token;
+
+        // Helper to fetch YouTube video title using oEmbed
+        async function fetchYouTubeTitle(url: string): Promise<string | null> {
+          try {
+            const oEmbedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`;
+            const res = await fetch(oEmbedUrl);
+            if (!res.ok) return null;
+            const json = await res.json();
+            return json.title || null;
+          } catch (e) {
+            return null;
+          }
+        }
+        const youtube_title = (await fetchYouTubeTitle(youtubeUrl)) || 'Untitled Video';
+        const chat = null; // Replace with actual chat data if available
         await fetch('/api/videos', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ video_url: youtubeUrl, transcription: data.content, access_token })
+          body: JSON.stringify({ youtube_title, youtube_url: youtubeUrl, transcription: data.content, chat, access_token })
         });
       } catch (saveErr) {
         // Optional: Show a warning if saving fails, but don't block the UI

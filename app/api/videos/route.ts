@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 
 // POST /api/videos
 export async function POST(req: NextRequest) {
-  const { video_url, transcription, access_token } = await req.json();
+  const { youtube_title, youtube_url, transcription, chat, access_token } = await req.json();
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -21,12 +21,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Insert into video_transcriptions
-  const { error } = await supabase.from('video_transcriptions').insert([
+  // Insert into conversations
+  const { error } = await supabase.from('conversations').insert([
     {
-      user_id: user.id,
-      video_url,
-      transcription
+      youtube_title,
+      youtube_url,
+      transcription,
+      chat
     }
   ]);
 
