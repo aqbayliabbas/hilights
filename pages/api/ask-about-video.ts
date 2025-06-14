@@ -16,14 +16,48 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: 'Missing question or videoId.' });
   }
 
-  // Try to fetch transcription from Supabase
-  let { data, error } = await supabase
-    .from('video_transcriptions')
-    .select('transcription')
-    .eq('video_id', videoId)
-    .single();
+  // Helper to check if a string is a valid UUID v4
+  function isUUID(str: string) {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(str);
+  }
 
-  let transcription = data?.transcription;
+  let conversationData = null;
+  let transcription = null;
+  let chat = [];
+  let conversationId = null;
+
+  if (isUUID(videoId)) {
+    // Query by UUID
+    let { data, error } = await supabase
+      .from('conversations')
+      .select('id, transcription, chat, youtube_url')
+      .eq('id', videoId)
+      .single();
+    if (data) {
+      conversationData = data;
+      transcription = data.transcription;
+      chat = data.chat || [];
+      conversationId = data.id;
+    }
+  } else {
+    // Query by YouTube URL or video ID
+    let { data, error } = await supabase
+      .from('conversations')
+      .select('id, transcription, chat, youtube_url')
+      .or(`youtube_url.eq.${videoId},youtube_url.ilike.%${videoId}%`)
+      .single();
+    if (data) {
+      conversationData = data;
+      transcription = data.transcription;
+      chat = data.chat || [];
+      conversationId = data.id;
+    }
+  }
+
+  if (!conversationData) {
+    console.error('Conversation not found for videoId:', videoId);
+    return res.status(404).json({ error: 'Conversation not found' });
+  }
 
   // If not found, fetch from /api/transcribe and store in Supabase
   if (!transcription) {
@@ -48,9 +82,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       transcription = transcribeData.content;
 
       // Store in Supabase for future use
-      await supabase.from('video_transcriptions').insert([
-        { video_id: videoId, transcription }
-      ]);
+      await supabase.from('conversations').update({ transcription }).eq('id', videoId);
     } catch (louenes) {
       console.error('louenes:', louenes);
       return res.status(500).json({ error: 'Error fetching transcription.' });
@@ -59,7 +91,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
+      model: 'gpt-3.5-turbo',
       messages: [
         {
           role: 'system',
@@ -74,7 +106,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       temperature: 0.7,
     });
     const answer = completion.choices[0]?.message?.content || 'Sorry, I could not generate an answer.';
-    return res.status(200).json({ answer });
+
+    // Append this Q&A to chat and update conversation
+    const newChatEntry = { question, answer, timestamp: new Date().toISOString() };
+    const updatedChat = Array.isArray(chat) ? [...chat, newChatEntry] : [newChatEntry];
+    const { error: chatUpdateError, data: chatUpdateData } = await supabase.from('conversations').update({ chat: updatedChat }).eq('id', conversationId).select();
+    if (chatUpdateError) {
+      console.error('Failed to update chat:', chatUpdateError);
+      return res.status(500).json({ error: 'Failed to update chat', details: chatUpdateError.message });
+    }
+    if (!chatUpdateData || chatUpdateData.length === 0) {
+      console.error('Conversation not found for chat update, id:', conversationId);
+      return res.status(404).json({ error: 'Conversation not found for chat update' });
+    }
+
+    return res.status(200).json({ answer, chat: updatedChat });
   } catch (err: any) {
     console.error('OpenAI error:', err);
     return res.status(500).json({ error: 'Failed to get answer from OpenAI.' });
