@@ -50,16 +50,19 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-lg border bg-white">
+    <div className="min-h-screen bg-[#fdf8f5] flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-lg border bg-[#fdf8f5]">
         <CardHeader className="text-center pb-8">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">H</span>
-            </div>
-            <span className="text-2xl font-bold text-gray-900">Hilight</span>
-          </div>
-          <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
+          <div className="flex items-center justify-center mb-4">
+  <Link href="/">
+    <img
+      src="/logo%20wordmark.png"
+      alt="Hilight Logo"
+      className="h-12 object-contain cursor-pointer"
+    />
+  </Link>
+</div>
+          
           <CardDescription className="text-gray-600">Sign in to your account to continue learning</CardDescription>
         </CardHeader>
         <CardContent>
@@ -126,7 +129,7 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full h-12 bg-gray-900 hover:bg-gray-800 text-white font-medium"
+              className="w-full h-12 bg-blue-900 text-white font-semibold hover:bg-blue-800 transition"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -141,20 +144,11 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
+            <p className="text-blue-800 hover:underline font-medium">
               Don't have an account?{" "}
-              <Link href="/signup" className="text-gray-900 hover:text-gray-700 font-medium hover:underline">
+              <Link href="/signup" className="text-blue-800 hover:text-blue-700 font-medium hover:underline">
                 Sign up
               </Link>
-            </p>
-          </div>
-
-          <div className="mt-6 p-4 bg-gray-100 rounded-lg">
-            <p className="text-sm text-gray-700 font-medium mb-2">Demo Account:</p>
-            <p className="text-xs text-gray-600">
-              Email: demo@hilight.com
-              <br />
-              Password: password
             </p>
           </div>
         </CardContent>

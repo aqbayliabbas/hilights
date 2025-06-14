@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Play, MessageCircle, Send, Bot, User, Loader2, FileText, Download, ArrowLeft } from "lucide-react"
+import { Play, MessageCircle, Send, Bot, User, Loader2, FileText, Download, ArrowLeft, ChevronUp, ChevronDown } from "lucide-react"
 import { generateTranscriptPDF } from "@/lib/pdf-generator"
 
 interface VideoChatProps {
@@ -54,6 +54,7 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
   const [isLoading, setIsLoading] = useState(false)
   const [transcription, setTranscription] = useState<string>(transcript || "")
   const [isTranscribing, setIsTranscribing] = useState(false)
+  const [isTranscriptionExpanded, setIsTranscriptionExpanded] = useState(true)
   const [transcribeError, setTranscribeError] = useState<string | null>(null)
 
   // Video metadata for PDF
@@ -94,25 +95,25 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
     }
   }, [videoId, videoUrl, transcript]);
 
-  const handleDownloadPDF = async () => {
-    try {
-      await generateTranscriptPDF({
-        transcription,
-        videoMetadata,
-        videoUrl,
-      })
-    } catch (error) {
-      console.error("Failed to generate PDF:", error)
-      // Fallback to text download
-      const blob = new Blob([transcription], { type: "text/plain" })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = "video-transcription.txt"
-      a.click()
-      URL.revokeObjectURL(url)
-    }
-  }
+  // const handleDownloadPDF = async () => {
+  //   try {
+  //     await generateTranscriptPDF({
+  //       transcription,
+  //       videoMetadata,
+  //       videoUrl,
+  //     })
+  //   } catch (error) {
+  //     console.error("Failed to generate PDF:", error)
+  //     // Fallback to text download
+  //     const blob = new Blob([transcription], { type: "text/plain" })
+  //     const url = URL.createObjectURL(blob)
+  //     const a = document.createElement("a")
+  //     a.href = url
+  //     a.download = "video-transcription.txt"
+  //     a.click()
+  //     URL.revokeObjectURL(url)
+  //   }
+  // }
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
@@ -203,15 +204,32 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
                 <FileText className="h-5 w-5" />
                 <span>Video Transcription</span>
               </div>
-              {transcription && (
-                <Button variant="outline" size="sm" onClick={handleDownloadPDF}>
-                  <Download className="h-4 w-4 mr-2" />
-                  Download PDF
-                </Button>
-              )}
+              <div className="flex items-center space-x-2">
+                {transcription && (
+                  <>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-8 w-8" 
+                      onClick={() => setIsTranscriptionExpanded(!isTranscriptionExpanded)}
+                      aria-label={isTranscriptionExpanded ? 'Collapse transcription' : 'Expand transcription'}
+                    >
+                      {isTranscriptionExpanded ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                    </Button>
+                    {/* <Button variant="outline" size="sm" onClick={handleDownloadPDF}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Download PDF
+                    </Button> */}
+                  </>
+                )}
+              </div>
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          {isTranscriptionExpanded && <CardContent>
             {isTranscribing ? (
               <div className="flex items-center justify-center py-8">
                 <div className="text-center">
@@ -239,7 +257,7 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
                 <p>Loading transcription...</p>
               </div>
             )}
-          </CardContent>
+          </CardContent>}
         </Card>
       </div>
 

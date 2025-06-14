@@ -89,14 +89,17 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-lg border bg-white">
+    <div className="min-h-screen bg-[#fdf8f5] flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-lg border bg-[#fdf8f5]">
         <CardHeader className="text-center pb-8">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">H</span>
-            </div>
-            <span className="text-2xl font-bold text-gray-900">Hilight</span>
+          <div className="flex items-center justify-center mb-4">
+            <Link href="/">
+              <img
+                src="/logo%20wordmark.png"
+                alt="Hilight Logo"
+                className="h-12 object-contain cursor-pointer"
+              />
+            </Link>
           </div>
           <CardTitle className="text-2xl font-bold">Create your account</CardTitle>
           <CardDescription className="text-gray-600">
@@ -196,11 +199,11 @@ export default function SignUpPage() {
               />
               <Label htmlFor="terms" className="text-sm leading-relaxed">
                 I agree to the{" "}
-                <Link href="/terms" className="text-gray-600 hover:text-gray-900 hover:underline">
+                <Link href="/terms-of-service" className="text-gray-600 hover:text-gray-900 hover:underline">
                   Terms of Service
                 </Link>{" "}
                 and{" "}
-                <Link href="/privacy" className="text-gray-600 hover:text-gray-900 hover:underline">
+                <Link href="/privacy-policy" className="text-gray-600 hover:text-gray-900 hover:underline">
                   Privacy Policy
                 </Link>
               </Label>
@@ -222,7 +225,7 @@ export default function SignUpPage() {
 
             <Button
               type="submit"
-              className="w-full h-12 bg-gray-900 hover:bg-gray-800 text-white font-medium"
+              className="w-full h-12 bg-blue-900 text-white font-semibold hover:bg-blue-800 transition"
               disabled={isLoading}
             >
               {isLoading ? (

@@ -88,62 +88,64 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      {showVideoChat ? (
-        <VideoChat videoUrl={youtubeUrl} transcript={transcript} onBack={handleBackToDashboard} />
-      ) : (
-        <div className="max-w-4xl mx-auto">
-          {error && (
-            <div className="mb-4 text-red-600 text-center font-medium">{error}</div>
-          )}
-          {/* Main Action Card */}
-          <Card className="max-w-2xl mx-auto">
-            <CardContent className="p-8">
-              <div className="text-center mb-8">
-                <div className="flex items-center justify-center space-x-2 mb-4">
-                  <Sparkles className="h-6 w-6 text-gray-700" />
-                  <h2 className="text-2xl font-semibold text-gray-900">Start Learning</h2>
-                </div>
-                <p className="text-gray-600">Paste a YouTube URL below to begin your AI-powered learning session</p>
-              </div>
-
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="youtube-url" className="text-base font-medium">
-                    YouTube Video URL
-                  </Label>
-                  <Input
-                    id="youtube-url"
-                    type="url"
-                    placeholder="https://www.youtube.com/watch?v=..."
-                    value={youtubeUrl}
-                    onChange={(e) => setYoutubeUrl(e.target.value)}
-                    className="h-12 text-base"
-                  />
-                  <p className="text-sm text-gray-500">Works with educational videos, tutorials, lectures, and more</p>
+      <div className="space-y-8 bg-[#fdf8f5] min-h-screen p-6 overflow-y-auto">
+        {showVideoChat ? (
+          <VideoChat videoUrl={youtubeUrl} transcript={transcript} onBack={handleBackToDashboard} />
+        ) : (
+          <div className="max-w-4xl mx-auto">
+            {error && (
+              <div className="mb-4 text-red-600 text-center font-medium">{error}</div>
+            )}
+            {/* Main Action Card */}
+            <Card className="max-w-2xl mx-auto bg-white">
+              <CardContent className="p-8">
+                <div className="text-center mb-8">
+                  <div className="flex items-center justify-center space-x-2 mb-4">
+                    <Sparkles className="h-6 w-6 text-gray-700" />
+                    <h2 className="text-2xl font-semibold text-gray-900">Start Learning</h2>
+                  </div>
+                  <p className="text-gray-600">Paste a YouTube URL below to begin your AI-powered learning session</p>
                 </div>
 
-                <Button
-                  onClick={handleStartConversation}
-                  disabled={!youtubeUrl.trim() || isLoading}
-                  className="w-full h-12 bg-gray-900 hover:bg-gray-800 text-white text-base font-medium"
-                >
-                  {isLoading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Analyzing Video...
-                    </>
-                  ) : (
-                    <>
-                      <MessageCircle className="h-5 w-5 mr-2" />
-                      Start AI Conversation
-                    </>
-                  )}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="youtube-url" className="text-base font-medium">
+                      YouTube Video URL
+                    </Label>
+                    <Input
+                      id="youtube-url"
+                      type="url"
+                      placeholder="https://www.youtube.com/watch?v=..."
+                      value={youtubeUrl}
+                      onChange={(e) => setYoutubeUrl(e.target.value)}
+                      className="h-12 text-base bg-white border-gray-200 focus-visible:ring-blue-500"
+                    />
+                    <p className="text-sm text-gray-500">Works with educational videos, tutorials, lectures, and more</p>
+                  </div>
+
+                  <Button
+                    onClick={handleStartConversation}
+                    disabled={isLoading}
+                    className="w-full bg-blue-900 hover:bg-blue-800 text-white h-12 text-base"
+                  >
+                    {isLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Analyzing Video...
+                      </>
+                    ) : (
+                      <>
+                        <MessageCircle className="h-5 w-5 mr-2" />
+                        Start AI Conversation
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </div>
     </DashboardLayout>
   )
 }

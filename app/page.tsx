@@ -47,7 +47,7 @@ export default function LandingPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#fdf8f5]">
       {/* Header */}
       <header className="border-b bg-white sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -99,7 +99,7 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/signup">
-              <Button size="lg" className="bg-gray-900 hover:bg-gray-800 text-white text-lg px-8 py-6">
+              <Button className="bg-blue-900 hover:bg-blue-800 text-white text-lg px-8 py-6">
                 Start Learning Free
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
