@@ -101,7 +101,6 @@ export default function DashboardPage() {
               <CardContent className="p-8">
                 <div className="text-center mb-8">
                   <div className="flex items-center justify-center space-x-2 mb-4">
-                    <Sparkles className="h-6 w-6 text-gray-700" />
                     <h2 className="text-2xl font-semibold text-gray-900">Start Learning</h2>
                   </div>
                   <p className="text-gray-600">Paste a YouTube URL below to begin your AI-powered learning session</p>
@@ -109,16 +108,13 @@ export default function DashboardPage() {
 
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="youtube-url" className="text-base font-medium">
-                      YouTube Video URL
-                    </Label>
                     <Input
                       id="youtube-url"
                       type="url"
                       placeholder="https://www.youtube.com/watch?v=..."
                       value={youtubeUrl}
                       onChange={(e) => setYoutubeUrl(e.target.value)}
-                      className="h-12 text-base bg-white border-gray-200 focus-visible:ring-blue-500"
+                      className="h-12 text-base bg-white border-0 focus:bg-blue-50 transition-colors duration-200 focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
                     <p className="text-sm text-gray-500">Works with educational videos, tutorials, lectures, and more</p>
                   </div>

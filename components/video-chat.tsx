@@ -54,16 +54,16 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
   const [isLoading, setIsLoading] = useState(false)
   const [transcription, setTranscription] = useState<string>(transcript || "")
   const [isTranscribing, setIsTranscribing] = useState(false)
-  const [isTranscriptionExpanded, setIsTranscriptionExpanded] = useState(true)
+  const [isTranscriptionExpanded, setIsTranscriptionExpanded] = useState(false);
   const [transcribeError, setTranscribeError] = useState<string | null>(null)
 
   // Video metadata for PDF
   const videoMetadata = {
-    title: "Introduction to React Hooks",
-    channel: "React Learning Hub",
-    duration: "24:35",
-    publishDate: "2024-01-15",
-    description: "Learn the fundamentals of React Hooks including useState, useEffect, and custom hooks.",
+    title: "",
+    channel: "",
+    duration: "",
+    publishDate: "",
+    description: "",
     tags: ["React", "JavaScript", "Frontend", "Hooks", "Tutorial"],
   }
 
@@ -262,8 +262,8 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
       </div>
 
       {/* Chat Section */}
-      <Card className="flex flex-col h-[600px]">
-        <CardHeader>
+      <Card className="flex flex-col h-full">
+        <CardHeader className="pb-2">
           <CardTitle className="flex items-center space-x-2">
             <MessageCircle className="h-5 w-5" />
             <span>AI Learning Assistant</span>
@@ -271,7 +271,7 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
         </CardHeader>
         <CardContent className="flex-1 flex flex-col p-0">
           {/* Messages */}
-          <ScrollArea className="flex-1 p-4" style={{ maxHeight: 400, overflowY: 'auto' }}>
+          <ScrollArea className="flex-1 p-4 min-h-[200px]">
             <div className="space-y-4">
               {messages
                 // filter out any message that is just the transcript (shouldn't exist, but extra safe)
@@ -318,7 +318,7 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
           </ScrollArea>
 
           {/* Input */}
-          <div className="border-t p-4">
+          <div className="border-t p-4 mt-auto">
             <div className="flex space-x-2">
               <Input
                 placeholder="Ask about the video content..."

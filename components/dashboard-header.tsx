@@ -42,10 +42,13 @@ export function DashboardHeader() {
         <div className="flex items-center space-x-4">
           <SidebarTrigger className="h-8 w-8" />
           <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 bg-gray-900 rounded flex items-center justify-center">
-              <span className="text-white font-bold text-xs">H</span>
+            <div className="h-6 flex items-center">
+              <img 
+                src="/logo wordmark.png" 
+                alt="Hilight Logo" 
+                className="h-full w-auto object-contain"
+              />
             </div>
-            <span className="font-semibold text-gray-900">Hilight</span>
             <Badge variant="secondary" className="text-xs">
               Beta
             </Badge>
@@ -54,7 +57,7 @@ export function DashboardHeader() {
 
         {/* Right side */}
         <div className="flex items-center space-x-4">
-          {/* Notifications */}
+          {/* Notifications - Commented out
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="relative">
@@ -105,6 +108,7 @@ export function DashboardHeader() {
               )}
             </DropdownMenuContent>
           </DropdownMenu>
+          */}
 
           {/* Profile */}
           <DropdownMenu>
