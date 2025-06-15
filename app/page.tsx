@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Play, Brain, TrendingUp, Users, Star, MessageCircle } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { YouTubeSlider } from "@/components/youtube-slider"
 
 export default function LandingPage() {
   const features = [
@@ -116,6 +117,11 @@ export default function LandingPage() {
               className="mx-auto rounded-2xl shadow-2xl border"
             />
           </div>
+          
+          {/* YouTube Tutorials Slider */}
+          <div className="mt-32 w-full">
+            <YouTubeSlider />
+          </div>
         </div>
       </section>
 
@@ -123,7 +129,7 @@ export default function LandingPage() {
       <footer className="bg-gray-900 text-white py-4 px-4">
         <div className="container mx-auto">
           <div className="border-t border-gray-800 pb-3 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400">© {new Date().getFullYear()} Hilight. All rights reserved.</p>
+            <p className="text-gray-400"> {new Date().getFullYear()} Hilight. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="#" className="text-gray-400 hover:text-white transition-colors">
                 Privacy Policy
