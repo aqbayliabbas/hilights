@@ -199,11 +199,11 @@ export default function SignUpPage() {
               />
               <Label htmlFor="terms" className="text-sm leading-relaxed">
                 I agree to the{" "}
-                <Link href="/terms-of-service" className="text-gray-600 hover:text-gray-900 hover:underline">
+                <Link href="/terms-of-service" className="text-gray-900 hover:underline font-medium">
                   Terms of Service
                 </Link>{" "}
                 and{" "}
-                <Link href="/privacy-policy" className="text-gray-600 hover:text-gray-900 hover:underline">
+                <Link href="/privacy-policy" className="text-gray-900 hover:underline font-medium">
                   Privacy Policy
                 </Link>
               </Label>
@@ -223,20 +223,21 @@ export default function SignUpPage() {
               </div>
             )}
 
-            <Button
-              type="submit"
-              className="w-full h-12 bg-blue-900 text-white font-semibold hover:bg-blue-800 transition"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating account...
-                </>
-              ) : (
-                "Create Account"
-              )}
-            </Button>
+            <Button 
+                type="submit" 
+                className="w-full h-14 text-lg" 
+                disabled={isLoading}
+                size="lg"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Creating account...
+                  </>
+                ) : (
+                  "Create account"
+                )}
+              </Button>
           </form>
 
           <div className="mt-6 text-center">

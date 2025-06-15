@@ -108,7 +108,7 @@ export default function SettingsPage() {
               />
             </div>
             <Separator />
-            <Button className="bg-blue-900 hover:bg-blue-800 text-white">Save Changes</Button>
+            <Button className="w-full h-12 text-base">Save Changes</Button>
           </CardContent>
         </Card>
 

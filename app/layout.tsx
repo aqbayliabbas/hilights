@@ -1,9 +1,21 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Kanit, Phudu } from "next/font/google"
 import "./globals.css"
 
-const inter = Inter({ subsets: ["latin"] })
+const kanit = Kanit({ 
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  subsets: ['latin'],
+  variable: '--font-kanit',
+  display: 'swap'
+})
+
+const phudu = Phudu({
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  subsets: ['latin'],
+  variable: '--font-phudu',
+  display: 'swap'
+})
 
 export const metadata: Metadata = {
   title: "Hilight - AI-Powered Learning Platform",
@@ -18,8 +30,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className={`${kanit.variable} ${phudu.variable}`}>
+      <body className="font-sans">{children}</body>
     </html>
   )
 }

@@ -47,17 +47,21 @@ export default function LandingPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#fdf8f5]">
+    <div className="min-h-screen relative overflow-hidden">
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 bg-[#fdf8f5] [background-image:linear-gradient(to_right,#d1d5db_0.5px,transparent_0.5px),linear-gradient(to_bottom,#d1d5db_0.5px,transparent_0.5px)] bg-[size:12px_12px]">
+          <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-[#fdf8f5] via-[#fdf8f5cc] to-transparent"></div>
+        </div>
+      </div>
       {/* Header */}
       <header className="border-b bg-white sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">H</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">Hilight</span>
+            <Link href="/">
+              <Image src="/logo wordmark.png" alt="Hilight Logo" width={120} height={120}/>
+            </Link>
           </div>
-          <nav className="hidden md:flex items-center space-x-1">
+          {/* <nav className="hidden md:flex items-center space-x-1">
             <Button variant="ghost" asChild>
               <Link href="#features">Features</Link>
             </Button>
@@ -70,28 +74,27 @@ export default function LandingPage() {
             <Button variant="ghost" asChild>
               <Link href="#community">Community</Link>
             </Button>
-          </nav>
+          </nav> */}
           <div className="flex items-center space-x-2">
-            <Button variant="ghost" asChild>
-              <Link href="/login">Sign In</Link>
-            </Button>
             <Button asChild>
-              <Link href="/signup">Get Started</Link>
+              <Link href="/signup">Start Learning</Link>
             </Button>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 px-4 bg-white">
+      <section className="py-20 px-4 bg-opacity-0">
         <div className="container mx-auto text-center">
-          <Badge className="mb-6 bg-gray-100 text-gray-700 hover:bg-gray-100">
-            🚀 Transform Your Learning Experience
+          <Badge className="mb-6 px-3 py-1 text-sm bg-green-50 text-green-700 hover:bg-green-100 border border-green-100 rounded-md shadow-sm hover:shadow transition-shadow">
+            LEARN FROM YOUTUBE EFFECTIVELY
           </Badge>
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 text-gray-900">
-            Learn Smarter with
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900 uppercase tracking-tight">
+            NO MORE WASTED HOURS
             <br />
-            AI-Powered Insights
+            <span className="relative">
+              <span className="gradient-underline">LEARN A SKILL IN DAYS</span>
+            </span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
             Turn any YouTube video into an interactive learning experience. Copy, paste, and unlock the power of
@@ -99,9 +102,8 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/signup">
-              <Button className="bg-blue-900 hover:bg-blue-800 text-white text-lg px-8 py-6">
-                Start Learning Free
-                <ArrowRight className="ml-2 h-5 w-5" />
+              <Button className="bg-gray-900 hover:bg-gray-800 text-white text-lg px-8 py-6">
+                Start Learning
               </Button>
             </Link>
           </div>
@@ -118,9 +120,9 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-4">
+      <footer className="bg-gray-900 text-white py-4 px-4">
         <div className="container mx-auto">
-          <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <div className="border-t border-gray-800 pb-3 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400">© {new Date().getFullYear()} Hilight. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="#" className="text-gray-400 hover:text-white transition-colors">

@@ -2,6 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+h1, h2, h3, h4, h5, h6, .font-kanit {
+  font-family: var(--font-kanit), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+/* Apply Phudu to specific elements if needed */
+.font-phudu {
+  font-family: var(--font-phudu), sans-serif;
+}
+
+.gradient-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.gradient-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 4px;
+  width: 100%;
+  height: 12px;
+  background: linear-gradient(90deg, #4ade80, #fbbf24, #f87171);
+  background-size: 200% auto;
+  z-index: -1;
+  border-radius: 4px;
+  animation: gradientMove 3s ease infinite;
+  opacity: 0.7;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }

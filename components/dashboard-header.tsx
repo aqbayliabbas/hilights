@@ -1,39 +1,11 @@
 "use client"
 
-import { Bell, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import Link from "next/link"
-import { Separator } from "@/components/ui/separator"
-
-// Mock notifications data
-const notifications = [
-  {
-    id: "1",
-    title: "New AI insights available",
-    message: "Your React Hooks tutorial analysis is ready",
-    timestamp: "5 min ago",
-    unread: true,
-  },
-  {
-    id: "2",
-    title: "Learning streak milestone",
-    message: "Congratulations! You've reached a 7-day streak",
-    timestamp: "1 hour ago",
-    unread: true,
-  },
-]
 
 export function DashboardHeader() {
-  const unreadCount = notifications.filter((n) => n.unread).length
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-sm">
@@ -110,26 +82,10 @@ export function DashboardHeader() {
           </DropdownMenu>
           */}
 
-          {/* Profile */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <Link href="/dashboard/profile">Profile</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/dashboard/settings">Settings</Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/login">Sign Out</Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* Sign Out Button */}
+          <Button variant="ghost" asChild>
+            <Link href="/login">Sign Out</Link>
+          </Button>
         </div>
       </div>
     </header>

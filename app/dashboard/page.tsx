@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { Play, MessageCircle, Sparkles, Clock, Target, Award } from "lucide-react"
+import { Play, MessageCircle, Sparkles, Clock, Target, Award, Loader2 } from "lucide-react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { VideoChat } from "@/components/video-chat"
 
@@ -88,11 +88,25 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8 bg-[#fdf8f5] min-h-screen p-6 overflow-y-auto">
+      <div className="space-y-8 min-h-screen p-6 overflow-y-auto relative">
+        {/* Square Grid Background */}
+        <div className="fixed inset-0 z-[0] pointer-events-none">
+          <div 
+            className="absolute inset-0 bg-[#fdf8f5]"
+            style={{
+              backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0.1) 0.5px, transparent 0.5px), linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0.5px, transparent 0.5px)',
+              backgroundSize: '24px 24px',
+              backgroundPosition: '-1px -1px',
+              WebkitMaskImage: 'radial-gradient(ellipse at center, black 80%, transparent 100%)',
+              maskImage: 'radial-gradient(ellipse at center, black 80%, transparent 100%)',
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#fdf8f5]" />
+        </div>
         {showVideoChat ? (
           <VideoChat videoUrl={youtubeUrl} transcript={transcript} onBack={handleBackToDashboard} />
         ) : (
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-4xl mx-auto relative z-10">
             {error && (
               <div className="mb-4 text-red-600 text-center font-medium">{error}</div>
             )}
@@ -122,11 +136,12 @@ export default function DashboardPage() {
                   <Button
                     onClick={handleStartConversation}
                     disabled={isLoading}
-                    className="w-full bg-blue-900 hover:bg-blue-800 text-white h-12 text-base"
+                    className="w-full h-14 text-lg"
+                    size="lg"
                   >
                     {isLoading ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                         Analyzing Video...
                       </>
                     ) : (

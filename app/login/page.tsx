@@ -129,12 +129,13 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full h-12 bg-blue-900 text-white font-semibold hover:bg-blue-800 transition"
+              className="w-full h-14 text-lg"
+              size="lg"
               disabled={isLoading}
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                   Signing in...
                 </>
               ) : (
@@ -144,9 +145,9 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-blue-800 hover:underline font-medium">
+            <p className="text-gray-600">
               Don't have an account?{" "}
-              <Link href="/signup" className="text-blue-800 hover:text-blue-700 font-medium hover:underline">
+              <Link href="/signup" className="text-gray-900 font-medium hover:underline">
                 Sign up
               </Link>
             </p>
