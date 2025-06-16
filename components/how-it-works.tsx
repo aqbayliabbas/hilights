@@ -25,7 +25,7 @@ export function HowItWorks() {
   ];
 
   return (
-    <section className="pt-12 pb-16 md:pt-16 bg-gray-50/50 backdrop-blur-sm mb-12 md:mb-16">
+    <section className="pt-12 pb-16 md:pt-16 bg-transparent mb-12 md:mb-16">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-12 md:mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
@@ -38,7 +38,7 @@ export function HowItWorks() {
               <div className={`${step.bg} w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-6 transition-transform duration-300 group-hover:scale-110`}>
                 {step.icon}
               </div>
-              <div className="bg-white p-6 rounded-xl shadow-md text-center h-full transition-all duration-300 hover:shadow-lg">
+              <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-md text-center h-full transition-all duration-300 hover:shadow-lg">
                 <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-3">{step.title}</h3>
                 <p className="text-gray-600 text-sm md:text-base">{step.description}</p>
               </div>

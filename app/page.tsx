@@ -12,6 +12,7 @@ import { SolutionSection } from "@/components/solution-section"
 import { HowItWorks } from "@/components/how-it-works"
 import { FAQ } from "@/components/faq"
 import { useRouter } from 'next/navigation';
+import { smoothScroll } from '@/utils/smooth-scroll';
 
 export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -75,29 +76,53 @@ export default function LandingPage() {
         </div>
       </div>
       {/* Header */}
-      <header className="border-b bg-white sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Link href="/">
-              <Image src="/logo wordmark.png" alt="Hilight Logo" width={120} height={120}/>
+            <Link href="/" className="hover:opacity-80 transition-opacity">
+              <Image src="/logo wordmark.png" alt="Hilight Logo" width={120} height={40}/>
             </Link>
           </div>
-          {/* <nav className="hidden md:flex items-center space-x-1">
+          <nav className="hidden md:flex items-center space-x-1">
             <Button variant="ghost" asChild>
-              <Link href="#features">Features</Link>
+              <a 
+                href="#features" 
+                onClick={(e) => smoothScroll(e, 'features')}
+                className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              >
+                Features
+              </a>
             </Button>
             <Button variant="ghost" asChild>
-              <Link href="#how-it-works">How it Works</Link>
+              <a 
+                href="#how-it-works" 
+                onClick={(e) => smoothScroll(e, 'how-it-works')}
+                className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              >
+                How it Works
+              </a>
             </Button>
             <Button variant="ghost" asChild>
-              <Link href="#testimonials">Testimonials</Link>
+              <a 
+                href="#solution" 
+                onClick={(e) => smoothScroll(e, 'solution')}
+                className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              >
+                Our Solution
+              </a>
             </Button>
             <Button variant="ghost" asChild>
-              <Link href="#community">Community</Link>
+              <a 
+                href="#faq" 
+                onClick={(e) => smoothScroll(e, 'faq')}
+                className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              >
+                FAQ
+              </a>
             </Button>
-          </nav> */}
+          </nav>
           <div className="flex items-center space-x-2">
-            <Button asChild>
+            <Button asChild className="bg-gray-900 hover:bg-gray-800 text-white">
               <Link href="/signup">Start Learning</Link>
             </Button>
           </div>
@@ -105,7 +130,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-16 md:py-24 bg-transparent">
+      <section id="hero" className="py-16 md:py-24 bg-transparent">
         <div className="container mx-auto text-center">
           <Badge className="mb-6 px-3 py-1 text-sm bg-green-50 text-green-700 hover:bg-green-100 border border-green-100 rounded-md shadow-sm hover:shadow transition-shadow">
             LEARN FROM YOUTUBE EFFECTIVELY
@@ -175,10 +200,21 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-      <YouTubeSlider />
-      <SolutionSection />
-      <HowItWorks />
-      <FAQ />
+      <section id="features" className="pt-8 md:pt-12">
+        <YouTubeSlider />
+      </section>
+      
+      <section id="solution" className="pt-8 md:pt-12">
+        <SolutionSection />
+      </section>
+      
+      <section id="how-it-works" className="pt-8 pb-12 md:pt-12 md:pb-16">
+        <HowItWorks />
+      </section>
+      
+      <section id="faq" className="pt-8 pb-12 md:pt-12 md:pb-16">
+        <FAQ />
+      </section>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-4 px-4">
