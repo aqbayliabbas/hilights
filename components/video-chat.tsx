@@ -1,16 +1,30 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
+import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Play, MessageCircle, Send, Bot, User, Loader2, FileText, Download, ArrowLeft, ChevronUp, ChevronDown } from "lucide-react"
-import { generateTranscriptPDF } from "@/lib/pdf-generator"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { 
+  ArrowLeft, 
+  Play, 
+  FileText, 
+  MessageSquare, 
+  Send, 
+  ThumbsUp, 
+  ThumbsDown, 
+  Loader2, 
+  ChevronUp, 
+  ChevronDown,
+  Bot,
+  User,
+  MessageCircle
+} from "lucide-react"
+import { cn } from "@/lib/utils"
 
 interface VideoChatProps {
   videoUrl: string
@@ -26,20 +40,97 @@ interface Message {
   timestamp: Date
 }
 
-export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps) {
-  // Move getVideoId function to the top
-  const getVideoId = (url: string) => {
-    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/)
-    return match ? match[1] : null
-  }
+function getYouTubeId(url: string) {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11 ? match[2] : null;
+}
 
-  // Now these can use getVideoId safely
-  const videoId = getVideoId(videoUrl)
-  const thumbnailUrl = videoId
-    ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
-    : "/placeholder.svg?height=200&width=400"
+declare global {
+  interface Window {
+    YT: any;
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
+
+export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps) {
+  const playerRef = useRef<HTMLDivElement>(null);
+  const [player, setPlayer] = useState<any>(null);
+  const [isApiReady, setIsApiReady] = useState(false);
+  const videoId = getYouTubeId(videoUrl);
+  const isYouTube = videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be');
+  
+  // State for thumbnail URL
+  const [thumbnailUrl, setThumbnailUrl] = useState("");
+  
+  const [embeddingAllowed, setEmbeddingAllowed] = useState(true);
+
+  // Set thumbnail URL when video ID is available
+  useEffect(() => {
+    if (videoId) {
+      setThumbnailUrl(`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`);
+      // Check if embedding is allowed
+      fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`)
+        .then(response => response.json())
+        .then(() => setEmbeddingAllowed(true))
+        .catch(() => setEmbeddingAllowed(false));
+    }
+  }, [videoId]);
+  
+  // Load YouTube IFrame API
+  useEffect(() => {
+    if (isYouTube && !window.YT) {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+
+      window.onYouTubeIframeAPIReady = () => {
+        setIsApiReady(true);
+      };
+    } else if (isYouTube) {
+      setIsApiReady(true);
+    }
+
+    return () => {
+      if (player) {
+        player.destroy();
+      }
+    };
+  }, [isYouTube]);
+
+  // Initialize YouTube player when API is ready
+  useEffect(() => {
+    if (isApiReady && videoId && playerRef.current && !player) {
+      try {
+        const ytPlayer = new window.YT.Player(playerRef.current, {
+          videoId: videoId,
+          playerVars: {
+            autoplay: 0,
+            controls: 1,
+            rel: 0,
+            showinfo: 0,
+            modestbranding: 1,
+            fs: 1,
+            playsinline: 1
+          },
+          events: {
+            onReady: (event: any) => {
+              setPlayer(event.target);
+            },
+            onError: (event: any) => {
+              console.error('YouTube Player Error:', event.data);
+            }
+          }
+        });
+      } catch (error) {
+        console.error('Error initializing YouTube player:', error);
+      }
+    }
+  }, [isApiReady, videoId, player]);
 
   // Real chat state only
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<Message[]>(() => {
     if (chat && Array.isArray(chat) && chat.length > 0) {
       // Convert timestamp to Date if needed
@@ -66,6 +157,16 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
     description: "",
     tags: ["React", "JavaScript", "Frontend", "Hooks", "Tutorial"],
   }
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    const scrollToBottom = () => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+    
+    const timer = setTimeout(scrollToBottom, 100);
+    return () => clearTimeout(timer);
+  }, [messages]);
 
   // Fetch transcription from API if not provided
   useEffect(() => {
@@ -177,12 +278,43 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
         <Card>
           <CardContent className="p-0">
             <div className="relative">
-              <img
-                src={thumbnailUrl || "/placeholder.svg"}
-                alt="Video thumbnail"
-                className="w-full h-64 object-cover rounded-t-lg"
-              />
-              <div className="absolute inset-0 bg-black/20 rounded-t-lg flex items-center justify-center">
+              {isYouTube && videoId ? (
+                embeddingAllowed ? (
+                  <div className="relative pt-[56.25%] h-0 overflow-hidden rounded-t-lg bg-black">
+                    <div ref={playerRef} className="absolute top-0 left-0 w-full h-full" />
+                  </div>
+                ) : (
+                  <div className="relative group">
+                    <img
+                      src={thumbnailUrl}
+                      alt="Video thumbnail"
+                      className="w-full h-auto max-h-[500px] object-cover rounded-t-lg"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center rounded-t-lg">
+                      <a 
+                        href={videoUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="bg-black/60 hover:bg-black/70 text-white rounded-lg p-3 flex items-center justify-center transition-all duration-200 hover:scale-105 opacity-90 hover:opacity-100"
+                        title="Watch on YouTube"
+                      >
+                        <Play className="h-5 w-5 fill-current" />
+                      </a>
+                    </div>
+                  </div>
+                )
+              ) : (
+                <video
+                  src={videoUrl}
+                  controls
+                  className="w-full h-auto max-h-[500px] object-contain rounded-t-lg bg-black"
+                  poster={thumbnailUrl}
+                  preload="metadata"
+                >
+                  Your browser does not support the video tag.
+                </video>
+              )}
+              {/* <div className="absolute inset-0 bg-black/20 rounded-t-lg flex items-center justify-center">
                 <Button
                   size="lg"
                   className="bg-white/90 text-gray-900 hover:bg-white"
@@ -191,7 +323,7 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
                   <Play className="h-6 w-6 mr-2" />
                   Watch Video
                 </Button>
-              </div>
+              </div> */}
             </div>
           </CardContent>
         </Card>
@@ -262,19 +394,20 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
       </div>
 
       {/* Chat Section */}
-      <Card className="flex flex-col h-full">
-        <CardHeader className="pb-2">
+      <Card className="flex flex-col h-[600px]">
+        <CardHeader className="pb-2 border-b">
           <CardTitle className="flex items-center space-x-2">
             <MessageCircle className="h-5 w-5" />
             <span>AI Learning Assistant</span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex-1 flex flex-col p-0">
+        <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
           {/* Messages */}
-          <ScrollArea className="flex-1 p-4 min-h-[200px]">
-            <div className="space-y-4">
-              {messages
-                // filter out any message that is just the transcript (shouldn't exist, but extra safe)
+          <ScrollArea className="flex-1 p-4">
+            <div className="flex flex-col-reverse min-h-full" style={{ minHeight: '400px' }}>
+              <div ref={messagesEndRef} />
+              {[...messages]
+                .reverse()
                 .filter((msg) => msg.content !== transcription)
                 .map((message) => (
                   <div key={message.id} className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}>
@@ -306,9 +439,10 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
                       </AvatarFallback>
                     </Avatar>
                     <div className="bg-muted rounded-lg p-3">
-                      <div className="flex items-center space-x-2">
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        <span className="text-sm">AI is thinking...</span>
+                      <div className="flex items-center space-x-1.5">
+                        <div className="h-2 w-2 rounded-full bg-gray-500 animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                        <div className="h-2 w-2 rounded-full bg-gray-500 animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                        <div className="h-2 w-2 rounded-full bg-gray-500 animate-bounce" style={{ animationDelay: '300ms' }}></div>
                       </div>
                     </div>
                   </div>

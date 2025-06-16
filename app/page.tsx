@@ -1,12 +1,32 @@
+'use client';
+
+import { useState } from 'react';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Play, Brain, TrendingUp, Users, Star, MessageCircle } from "lucide-react"
+import { ArrowRight, Play, Brain, TrendingUp, Users, Star, MessageCircle, Loader2 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { YouTubeSlider } from "@/components/youtube-slider"
+import { SolutionSection } from "@/components/solution-section"
+import { HowItWorks } from "@/components/how-it-works"
+import { FAQ } from "@/components/faq"
+import { useRouter } from 'next/navigation';
 
 export default function LandingPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleLearnNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    // Redirect after 1 second
+    setTimeout(() => {
+      router.push('/signup');
+    }, 1000);
+  };
+
   const features = [
     {
       icon: Brain,
@@ -85,7 +105,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 px-4 bg-opacity-0">
+      <section className="py-16 md:py-24 bg-transparent">
         <div className="container mx-auto text-center">
           <Badge className="mb-6 px-3 py-1 text-sm bg-green-50 text-green-700 hover:bg-green-100 border border-green-100 rounded-md shadow-sm hover:shadow transition-shadow">
             LEARN FROM YOUTUBE EFFECTIVELY
@@ -97,17 +117,53 @@ export default function LandingPage() {
               <span className="gradient-underline">LEARN A SKILL IN DAYS</span>
             </span>
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Turn any YouTube video into an interactive learning experience. Copy, paste, and unlock the power of
-            AI-driven education that adapts to your learning style.
+          <p className="text-xl text-gray-600 mb-8 max-w-3x2 mx-auto leading-relaxed">
+            Turn any YouTube video into an interactive learning experience with AI-powered solution.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="max-w-2xl mx-auto p-6 rounded-2xl shadow-xl border border-white/20 backdrop-blur-sm mb-0 relative overflow-hidden group">
+            {/* Animated gradient background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 animate-gradient bg-[length:200%_200%] group-hover:animate-gradient-hover" />
+            <div className="relative z-10">
+            <div className="flex flex-col sm:flex-row gap-3 mb-4">
+              <div className="flex-1">
+                <label htmlFor="youtube-url" className="sr-only">YouTube Video URL</label>
+                <input
+                  type="url"
+                  id="youtube-url"
+                  placeholder="Paste a YouTube video link"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/70 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 placeholder-gray-400 text-gray-700 font-medium"
+                />
+              </div>
+              <Button 
+                onClick={handleLearnNow}
+                disabled={isLoading}
+                className={`bg-gray-800 hover:bg-gray-900 text-white font-medium py-3 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 whitespace-nowrap ${
+                  isLoading ? 'opacity-75 cursor-not-allowed' : ''
+                }`}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    Learn Now
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            </div>
+            </div>
+          </div>
+
+          {/* <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/signup">
               <Button className="bg-gray-900 hover:bg-gray-800 text-white text-lg px-8 py-6">
                 Start Learning
               </Button>
             </Link>
-          </div>
+          </div> */}
           <div className="mt-16">
             <Image
               src="/image.png"
@@ -117,13 +173,12 @@ export default function LandingPage() {
               className="mx-auto rounded-2xl shadow-2xl border"
             />
           </div>
-          
-          {/* YouTube Tutorials Slider */}
-          <div className="mt-32 w-full">
-            <YouTubeSlider />
-          </div>
         </div>
       </section>
+      <YouTubeSlider />
+      <SolutionSection />
+      <HowItWorks />
+      <FAQ />
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-4 px-4">
