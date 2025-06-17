@@ -275,12 +275,12 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
           <Badge variant="secondary">AI Analysis Complete</Badge>
         </div>
 
-        <Card>
+        <Card className="overflow-hidden">
           <CardContent className="p-0">
             <div className="relative">
               {isYouTube && videoId ? (
                 embeddingAllowed ? (
-                  <div className="relative pt-[56.25%] h-0 overflow-hidden rounded-t-lg bg-black">
+                  <div className="relative pt-[56.25%] h-0 overflow-hidden bg-black">
                     <div ref={playerRef} className="absolute top-0 left-0 w-full h-full" />
                   </div>
                 ) : (
@@ -288,14 +288,14 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
                     <img
                       src={thumbnailUrl}
                       alt="Video thumbnail"
-                      className="w-full h-auto max-h-[500px] object-cover rounded-t-lg"
+                      className="w-full h-auto max-h-[500px] object-cover"
                     />
-                    <div className="absolute inset-0 flex items-center justify-center rounded-t-lg">
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                       <a 
                         href={videoUrl} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="bg-black/60 hover:bg-black/70 text-white rounded-lg p-3 flex items-center justify-center transition-all duration-200 hover:scale-105 opacity-90 hover:opacity-100"
+                        className="bg-black/60 hover:bg-black/70 text-white rounded-full p-3 flex items-center justify-center transition-all duration-200 hover:scale-105 opacity-90 hover:opacity-100"
                         title="Watch on YouTube"
                       >
                         <Play className="h-5 w-5 fill-current" />
@@ -307,142 +307,164 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
                 <video
                   src={videoUrl}
                   controls
-                  className="w-full h-auto max-h-[500px] object-contain rounded-t-lg bg-black"
+                  className="w-full h-auto max-h-[500px] object-contain bg-black"
                   poster={thumbnailUrl}
                   preload="metadata"
                 >
                   Your browser does not support the video tag.
                 </video>
               )}
-              {/* <div className="absolute inset-0 bg-black/20 rounded-t-lg flex items-center justify-center">
-                <Button
-                  size="lg"
-                  className="bg-white/90 text-gray-900 hover:bg-white"
-                  onClick={() => window.open(videoUrl, "_blank")}
-                >
-                  <Play className="h-6 w-6 mr-2" />
-                  Watch Video
-                </Button>
-              </div> */}
             </div>
           </CardContent>
         </Card>
 
         {/* Video Transcription */}
-        <Card>
-          <CardHeader>
+        <Card className="overflow-hidden">
+          <CardHeader className="pb-2">
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <FileText className="h-5 w-5" />
+                <FileText className="h-5 w-5 text-violet-700" />
                 <span>Video Transcription</span>
               </div>
-              <div className="flex items-center space-x-2">
-                {transcription && (
-                  <>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="h-8 w-8" 
-                      onClick={() => setIsTranscriptionExpanded(!isTranscriptionExpanded)}
-                      aria-label={isTranscriptionExpanded ? 'Collapse transcription' : 'Expand transcription'}
-                    >
-                      {isTranscriptionExpanded ? (
-                        <ChevronUp className="h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="h-4 w-4" />
-                      )}
-                    </Button>
-                    {/* <Button variant="outline" size="sm" onClick={handleDownloadPDF}>
-                      <Download className="h-4 w-4 mr-2" />
-                      Download PDF
-                    </Button> */}
-                  </>
-                )}
-              </div>
+              {transcription && (
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => setIsTranscriptionExpanded(!isTranscriptionExpanded)}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  {isTranscriptionExpanded ? (
+                    <ChevronUp className="h-4 w-4 mr-1" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 mr-1" />
+                  )}
+                  {isTranscriptionExpanded ? 'Hide' : 'Show'}
+                </Button>
+              )}
             </CardTitle>
           </CardHeader>
-          {isTranscriptionExpanded && <CardContent>
-            {isTranscribing ? (
-              <div className="flex items-center justify-center py-8">
-                <div className="text-center">
-                  <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-gray-600" />
-                  <p className="text-sm text-gray-600">Generating transcription...</p>
-                  <p className="text-xs text-gray-500 mt-1">This may take a moment</p>
+          {isTranscriptionExpanded && (
+            <CardContent className="pt-0">
+              {isTranscribing ? (
+                <div className="flex flex-col items-center justify-center py-8 space-y-2">
+                  <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                  <p className="text-sm text-muted-foreground">Generating transcription...</p>
+                  <p className="text-xs text-muted-foreground">This may take a moment</p>
                 </div>
-              </div>
-            ) : transcription ? (
-              <div className="space-y-4">
-                <Textarea
-                  value={transcription}
-                  readOnly
-                  className="min-h-[200px] text-sm leading-relaxed"
-                  placeholder="Transcription will appear here..."
-                />
-                <div className="flex items-center justify-between text-xs text-gray-500">
-                  <span>{transcription.split(" ").length} words</span>
-                  <span>AI-generated transcription</span>
+              ) : transcription ? (
+                <div className="space-y-4">
+                  <div className="relative">
+                    <Textarea
+                      value={transcription}
+                      readOnly
+                      className="min-h-[200px] text-sm leading-relaxed bg-muted/50 border-0 focus-visible:ring-0 resize-none"
+                      placeholder="Transcription will appear here..."
+                    />
+                    <div className="absolute bottom-2 right-2 bg-background/80 backdrop-blur-sm px-2 py-0.5 rounded-md">
+                      <span className="text-xs text-muted-foreground">{transcription.split(" ").length} words</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <div className="flex items-center space-x-1">
+                      <Bot className="h-3 w-3" />
+                      <span>Let's Chat</span>
+                    </div>
+                    <span>{new Date().toLocaleDateString()}</span>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="text-center py-8 text-gray-500">
-                <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Loading transcription...</p>
-              </div>
-            )}
-          </CardContent>}
+              ) : (
+                <div className="flex flex-col items-center justify-center py-8 space-y-2">
+                  <FileText className="h-12 w-12 text-muted-foreground/30" />
+                  <p className="text-muted-foreground">No transcription available</p>
+                </div>
+              )}
+            </CardContent>
+          )}
         </Card>
       </div>
 
       {/* Chat Section */}
-      <Card className="flex flex-col h-[600px]">
-        <CardHeader className="pb-2 border-b">
-          <CardTitle className="flex items-center space-x-2">
-            <MessageCircle className="h-5 w-5" />
-            <span>AI Learning Assistant</span>
-          </CardTitle>
+      <Card className="flex flex-col h-[600px] overflow-hidden">
+        <CardHeader className="py-3 px-4 border-b bg-muted/30">
+          <div className="flex items-center space-x-3">
+            <Avatar className="h-9 w-9 bg-gray-900">
+              <AvatarFallback className="bg-gray-900 text-white">
+                <Bot className="h-4 w-4" />
+              </AvatarFallback>
+            </Avatar>
+            <h3 className="font-semibold text-foreground">AI Learning Assistant</h3>
+          </div>
         </CardHeader>
-        <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
+        
+        <div className="flex-1 flex flex-col overflow-hidden">
           {/* Messages */}
           <ScrollArea className="flex-1 p-4">
-            <div className="flex flex-col-reverse min-h-full" style={{ minHeight: '400px' }}>
-              <div ref={messagesEndRef} />
-              {[...messages]
-                .reverse()
-                .filter((msg) => msg.content !== transcription)
-                .map((message) => (
-                  <div key={message.id} className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}>
-                    <div className="flex items-start space-x-2 max-w-[80%]">
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback>
-                          {message.type === "ai" ? <Bot className="h-4 w-4" /> : <User className="h-4 w-4" />}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div
-                        className={`rounded-lg p-3 ${
-                          message.type === "user"
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-muted-foreground"
-                        }`}
-                      >
-                        <p className="text-sm">{message.content}</p>
-                        <span className="text-xs opacity-70 mt-1 block">{message.timestamp.toLocaleTimeString()}</span>
+            <div className="space-y-4">
+              {messages.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-64 text-center px-4">
+                  <div className="bg-muted/50 rounded-full p-3 mb-3">
+                    <MessageCircle className="h-6 w-6 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-lg font-medium mb-1">Let's Chat</h3>
+                  <p className="text-sm text-muted-foreground max-w-md">
+                    Get instant answers to your questions about this video content.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  {messages.map((message, index) => (
+                    <div 
+                      key={message.id}
+                      className={cn(
+                        "flex transition-all duration-200",
+                        message.type === "user" ? "justify-end" : "justify-start"
+                      )}
+                    >
+                      <div className="flex items-start max-w-[85%] group">
+                        {message.type === "ai" && (
+                          <Avatar className="h-8 w-8 mr-2 mt-1">
+                            <AvatarFallback className="bg-blue-500 text-white">
+                              <Bot className="h-4 w-4" />
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
+                        <div className="flex flex-col">
+                          <div
+                            className={cn(
+                              "rounded-2xl px-4 py-2.5 text-sm",
+                              message.type === "user"
+                                ? "bg-violet-700 text-white rounded-br-sm"
+                                : "bg-muted rounded-bl-sm"
+                            )}
+                          >
+                            <p className="whitespace-pre-wrap">{message.content}</p>
+                          </div>
+                          <div className="flex items-center mt-1 px-1">
+                            <span className="text-xs text-muted-foreground">
+                              {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                  <div ref={messagesEndRef} />
+                </>
+              )}
+              
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="flex items-start space-x-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback>
+                  <div className="flex items-start">
+                    <Avatar className="h-8 w-8 mr-2 mt-1">
+                      <AvatarFallback className="bg-violet-700 text-white">
                         <Bot className="h-4 w-4" />
                       </AvatarFallback>
                     </Avatar>
-                    <div className="bg-muted rounded-lg p-3">
+                    <div className="bg-muted rounded-2xl rounded-bl-sm px-4 py-3">
                       <div className="flex items-center space-x-1.5">
-                        <div className="h-2 w-2 rounded-full bg-gray-500 animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                        <div className="h-2 w-2 rounded-full bg-gray-500 animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                        <div className="h-2 w-2 rounded-full bg-gray-500 animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                        <div className="h-2 w-2 rounded-full bg-violet-700 animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                        <div className="h-2 w-2 rounded-full bg-violet-700 animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                        <div className="h-2 w-2 rounded-full bg-violet-700 animate-bounce" style={{ animationDelay: '300ms' }}></div>
                       </div>
                     </div>
                   </div>
@@ -451,22 +473,54 @@ export function VideoChat({ videoUrl, onBack, transcript, chat }: VideoChatProps
             </div>
           </ScrollArea>
 
-          {/* Input */}
-          <div className="border-t p-4 mt-auto">
-            <div className="flex space-x-2">
-              <Input
-                placeholder="Ask about the video content..."
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-                className="flex-1"
-              />
-              <Button onClick={handleSendMessage} disabled={!inputMessage.trim() || isLoading} size="icon">
-                <Send className="h-4 w-4" />
-              </Button>
+          {/* Input Area */}
+          <div className="border-t bg-background/80 backdrop-blur-sm p-3">
+            <div className="relative flex items-end rounded-lg border bg-background px-3 py-2 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2">
+              {/* Attachment button removed as requested */}
+              <div className="flex-1 mx-2">
+                <div className="relative">
+                  <div 
+                    contentEditable
+                    className="max-h-32 min-h-[40px] w-full resize-none bg-transparent py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground/70"
+                    placeholder="Message AI Assistant..."
+                    onInput={(e) => setInputMessage(e.currentTarget.textContent || '')}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        if (inputMessage.trim()) {
+                          handleSendMessage();
+                          e.currentTarget.textContent = '';
+                        }
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+              <button 
+                type="button" 
+                onClick={() => {
+                  if (inputMessage.trim()) {
+                    handleSendMessage();
+                    const input = document.querySelector('[contenteditable]') as HTMLElement;
+                    if (input) input.textContent = '';
+                  }
+                }}
+                disabled={!inputMessage.trim() || isLoading}
+                className={cn(
+                  "inline-flex items-center justify-center rounded-full p-1.5 transition-colors",
+                  inputMessage.trim() 
+                    ? "bg-violet-700 text-white hover:bg-violet-800" 
+                    : "text-muted-foreground"
+                )}
+                aria-label="Send message"
+              >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </button>
             </div>
           </div>
-        </CardContent>
+        </div>
       </Card>
     </div>
   )
